@@ -10,7 +10,7 @@
 int main(int argc, char** argv){
     if (argc != 3) {
         printf("Error: execution command should be: deliver <server address> <server port number>\n");
-        return 0;
+        exit(EXIT_FAILURE);
     }
 
     //1. ask the user to input message
@@ -24,7 +24,7 @@ int main(int argc, char** argv){
 
     if (strcmp(command, "ftp") != 0){
         printf("Error: the command should be:\n        ftp <file name>\n");
-        return 0;
+        exit(EXIT_FAILURE);
     }
 
     int port = atoi(argv[2]);
@@ -46,23 +46,24 @@ int main(int argc, char** argv){
         printf("-----File exist, sending ftp to the server...-----\n");
         if (sendto(socket_fd, "ftp", sizeof("ftp"), 0, (struct sockaddr*) &server_addr, ser_addrlen) == -1){
             printf("Error: send failed\n");
-            return 0;
+            exit(EXIT_FAILURE);
         }
     } else {
         printf("File \"%s\" does not exist\n", filename);
-        return 0;
+        exit(EXIT_FAILURE);
     }
 
     // 3. receive message from server
     char buffer[100] = {'0'};
     if (recvfrom(socket_fd, buffer, sizeof(buffer), 0, (struct sockaddr*) &server_addr, &ser_addrlen) == -1){
         printf("Error: receive failed\n");
+        exit(EXIT_FAILURE);
     }
     printf("-----Receiving server message...-----\n");
     if (strcmp(buffer, "yes") == 0){
         printf("A file transfer can start.\n");
     }else {
-        return 0;
+        exit(EXIT_FAILURE);
     }
     
     return 0;
