@@ -32,6 +32,7 @@ int main(int argc, char** argv){
     // associate the server with specific address
     if(bind(socket_FD, saddr, saddrlen) == -1){
         printf("Error: bind failed\n");
+        return 0;
     }
     printf("Server receiving on port %d\n", port);
     //2. receive message from client
@@ -39,14 +40,22 @@ int main(int argc, char** argv){
     struct sockaddr_in client_addr;
     socklen_t caddrlen = sizeof(client_addr);
     struct sockaddr* caddr = &client_addr;
-
-    recvfrom(socket_FD, buffer, sizeof(buffer), 0, caddr, &caddrlen); // empty client addr storage
+    if (recvfrom(socket_FD, buffer, sizeof(buffer), 0, caddr, &caddrlen) == -1){
+        printf("Error: receive failed\n");
+        return 0;
+    }; // empty client addr storage
     printf("-----Receive finished. Start to reply...-----\n");
     // 3. reply message
     if (strcmp(buffer, "ftp") == 0){
-        sendto(socket_FD, "yes", sizeof("yes"), 0, caddr, caddrlen);
+        if (sendto(socket_FD, "yes", sizeof("yes"), 0, caddr, caddrlen) == -1){
+            printf("Error: send failed\n");
+            return 0;
+        }
     }else{
-        sendto(socket_FD, "no", sizeof("no"), 0, caddr, caddrlen);
+        if (sendto(socket_FD, "no", sizeof("no"), 0, caddr, caddrlen) == -1){
+            printf("Error: send failed\n");
+            return 0;
+        }
     }
     printf("-----Reply finished.-----\n");
 
