@@ -39,10 +39,12 @@ int main(int argc, char** argv){
     // should be set to all zeros with the function memset(). -- Beej
     memset(server_addr.sin_zero, 0, sizeof(server_addr.sin_zero));
 
+    socklen_t ser_addrlen = sizeof(server_addr);
+
     // 2. check the existence of the file
     if( access(filename, F_OK) == 0 ) {
         printf("-----File exist, sending ftp to the server...-----\n");
-        if (sendto(socket_fd, "ftp", sizeof("ftp"), 0, (struct sockaddr*) &server_addr, sizeof(server_addr)) == -1){
+        if (sendto(socket_fd, "ftp", sizeof("ftp"), 0, (struct sockaddr*) &server_addr, ser_addrlen) == -1){
             printf("Error: send failed\n");
             return 0;
         }
@@ -52,8 +54,10 @@ int main(int argc, char** argv){
     }
 
     // 3. receive message from server
-    char buffer[100] = {'\0'};
-    recvfrom(socket_fd, buffer, sizeof(buffer), 0, (struct sockaddr*) &server_addr, sizeof(server_addr));
+    char buffer[100] = {'0'};
+    if (recvfrom(socket_fd, buffer, sizeof(buffer), 0, (struct sockaddr*) &server_addr, &ser_addrlen) == -1){
+        printf("Error: receive failed\n");
+    }
     printf("-----Receiving server message...-----\n");
     if (strcmp(buffer, "yes") == 0){
         printf("A file transfer can start.\n");
@@ -63,3 +67,4 @@ int main(int argc, char** argv){
     
     return 0;
 }
+
