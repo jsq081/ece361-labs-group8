@@ -42,7 +42,10 @@ int main(int argc, char** argv){
     // 2. check the existence of the file
     if( access(filename, F_OK) == 0 ) {
         printf("-----File exist, sending ftp to the server...-----\n");
-        sendto(socket_fd, "ftp", sizeof("ftp"), 0, (struct sockaddr*) &server_addr, sizeof(server_addr));
+        if (sendto(socket_fd, "ftp", sizeof("ftp"), 0, (struct sockaddr*) &server_addr, sizeof(server_addr)) == -1){
+            printf("Error: send failed\n");
+            return 0;
+        }
     } else {
         printf("File \"%s\" does not exist\n", filename);
         return 0;
