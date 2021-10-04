@@ -107,7 +107,7 @@ int main(int argc, char** argv){
     // num_frag starts from 1
     long int num_frag = ftell(file) / 1000 + 1;   // current value of the position indicator of the stream
     fseek(file, 0, SEEK_SET); // seek back to the beginning
-    printf("number of fragments/packets: %ld\n", num_frag);
+    //printf("number of fragments/packets: %ld\n", num_frag);
 
     // each packet is a char array
     // packets should be double pointer
@@ -118,34 +118,27 @@ int main(int argc, char** argv){
         packets[i].total_frag = num_frag;
         // num_frag starts from 1
         packets[i].frag_no = i+1;
-        // if (i == num_frag){
-        //     // the last packet
-        //     fseek(file, 0, SEEK_END);
-        //     pac.size = ftell(file);
-        // }else {
-        //     pac.size = 1000;
-        // }
-        printf("total flag: %d, flag no: %d\n", packets[i].total_frag, packets[i].frag_no);
+        //printf("total flag: %d, flag no: %d\n", packets[i].total_frag, packets[i].frag_no);
         packets[i].size = fread(packets[i].filedata, 1, 1000, file);
-        printf("size:%d\n", packets[i].size);
+        //printf("size:%d\n", packets[i].size);
         packets[i].filename = filename;
         //transfer packet into char array format
         //initialize char array
-        printf("initialize char\n");
+        //printf("initialize char\n");
         //memset(pac_form[i], 0, 1200);
         //int str_size = sprintf(NULL, )
         pac_form[i] = malloc(1200);
         // int curr = 0;
         // convert in to string
         // return the total number of chars written
-        printf("aaa\n");
+        //printf("aaa\n");
         int cursor = sprintf(pac_form[i], "%d:%d:%d:%s:", packets[i].total_frag,
                                                 packets[i].frag_no,
                                                 packets[i].size,
                                                 packets[i].filename);
-        printf("ready to copy\n");
+        //printf("ready to copy\n");
         memcpy(pac_form[i]+cursor, packets[i].filedata, packets[i].size);
-        printf("1.packet ---%s---\n", pac_form[i]);
+        //printf("1.packet ---%s---\n", pac_form[i]);
     }
     
     // client send packets
@@ -155,7 +148,7 @@ int main(int argc, char** argv){
             printf("Failed send packets\n");
             exit(EXIT_FAILURE);
         }
-        printf("2.packet ---%s---\n", pac_form[i]);
+        //printf("2.packet ---%s---\n", pac_form[i]);
     }
 
     close(socketfd);
