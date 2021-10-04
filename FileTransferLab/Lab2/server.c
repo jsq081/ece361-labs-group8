@@ -9,7 +9,6 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include "packet.h"
-#include <regex.h>
 
 int main(int argc, char** argv){
 
@@ -34,7 +33,7 @@ int main(int argc, char** argv){
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    // Note that sin_zero (which is included to pad the structure to the length of a struct sockaddr)
+    // Note that sin_zero (whsich is included to pad the structure to the length of a struct sockaddr)
     // should be set to all zeros with the function memset(). -- Beej
     memset (serv_addr.sin_zero, 0, sizeof(serv_addr.sin_zero));
 
