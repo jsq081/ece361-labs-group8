@@ -11,67 +11,6 @@
 #include "packet.h"
 #include <regex.h>
 
-void stringToPacket(char *buf, struct packet *pack){
-
-    //compile regular expression into ":"
-	regex_t reg; 
-	if(regcomp(&reg, "[:]", REG_EXTENDED)) {
-        fprintf(stderr, "regcomp error\n");
-    }
-	
-	regmatch_t match[1];
-	int cursor = 0; 
-	char regex_buf[1200]; 
-	
-    //compare string to regular expression to find ":"
-    //match total frag
-    if(regexec(&reg, buf + cursor, 1, match, REG_NOTBOL)) {
-        fprintf(stderr, "regex error\n");
-        exit(1);
-    }
-    memset(regex_buf, 0, 1200 * sizeof(char));
-    memcpy(regex_buf, buf + cursor, match[0].rm_so);
-    pack -> total_frag = atoi(regex_buf);
-    cursor =cursor + (match[0].rm_so + 1);
-	
-
-	// Get frag_no, match frag_no
-	if(regexec(&reg, buf + cursor, 1, match, REG_NOTBOL)) {
-        fprintf(stderr, "regex error\n");
-        exit(1);
-    }
-	memset(regex_buf, 0, 1200 * sizeof(char));
-    memcpy(regex_buf, buf + cursor, match[0].rm_so);
-    pack -> frag_no = atoi(regex_buf);
-    cursor = cursor + (match[0].rm_so + 1);
-	
-	// printf("frag no: %d\n", packet -> frag_no);
-
-	// Get size 
-	if(regexec(&reg, buf + cursor, 1, match, REG_NOTBOL)) {
-        fprintf(stderr, "regex error\n");
-        exit(1);
-    }
-	memset(regex_buf, 0, 1200 * sizeof(char));
-    memcpy(regex_buf, buf + cursor, match[0].rm_so);
-    pack -> size = atoi(regex_buf);
-    cursor = cursor + (match[0].rm_so + 1);
-		
-	// Get filename
-	if(regexec(&reg, buf + cursor, 1, match, REG_NOTBOL)) {
-        fprintf(stderr, "regex error\n");
-        exit(1);
-    }
-    memcpy(pack->filename, buf + cursor, match[0].rm_so);
-    pack -> filename[match[0].rm_so] = 0;
-    cursor += (match[0].rm_so + 1);
-	
-	// Get data 
-	memcpy(pack->filedata, buf + cursor, pack->size);
-
-}
-
-
 int main(int argc, char** argv){
 
     //check user argument
